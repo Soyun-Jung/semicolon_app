@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from 'react-apollo-hooks';
+import { ApolloProvider } from 'react-apollo-hooks';``
 import options from './Apollo';
 import { ThemeProvider } from 'styled-components';
 import styles from './styles';
@@ -19,12 +19,14 @@ export default function App() {
   const [client, setClient] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const preLoad = async () => {
+    
+    await Asset.loadAsync([require('./assets/icon.png')]);
+    await AsyncStorage.clear();
+
     try {
       await Font.loadAsync({
         ...AntDesign.font
       });
-
-      await Asset.loadAsync([require('./assets/icon.png')]);
 
       const cache = new InMemoryCache({});
 

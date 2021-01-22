@@ -7,6 +7,7 @@ import useInput from "../../hooks/useInput";
 import { Alert } from "react-native";
 import { useMutation } from 'react-apollo-hooks';
 import { LOG_IN } from './AuthQueries';
+import constants from "../../Constants";
 
 const View = styled.View`
   justify-content: center;
@@ -14,10 +15,16 @@ const View = styled.View`
   flex: 1;
 `;
 
+const Image = styled.Image`
+  margin-top : -30px;
+  margin-bottom : -30px;
+  width: ${constants.width / 1.5};
+`;
+
 export default ({ navigation }) => {
-  const emailInput = useInput("");
+  const emailInput = useInput(navigation.getParam("email",""));
   const [loading, setLoading] = useState(false);
-  const [requestSecret] = useMutation(LOG_IN, {
+  const [requestSecretMutation] = useMutation(LOG_IN, {
     variables: {
       email: emailInput.value
     }
@@ -34,9 +41,18 @@ export default ({ navigation }) => {
     }
     try {
       setLoading(true);
-      await requestSecret();
-      Alert.alert("Check ur Email again plz 😎");
-      navigation.navigate("Confirm");
+      const {
+        data: { requestSecret } 
+      } = await requestSecretMutation();
+      console.log(requestSecret);
+      if (requestSecret) {
+        Alert.alert("Check ur Email again plz 😎");
+        navigation.navigate("Confirm", { email: value });
+        return;
+      } else {
+        Alert.alert("Account not found 😅");
+        navigation.navigate("Signup",{ email: value });
+      }
     } catch (error) {
       console.log(error);
       Alert.alert("Can't log in now 😫");
@@ -47,12 +63,14 @@ export default ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
+        <Image resizeMode={"contain"} source={require("../../assets/logo.png")} />
         <AuthInput
           {...emailInput}
           placeholder="Email"
           keyboardType="email-address"
           returnKeyType="send"
           onEndEditing={handleLogin}
+          onSubmitEditing={handleLogin}
           autoCorrect={false}
         />
         <AuthButton loading={loading} onPress={handleLogin} text="Log In" />
