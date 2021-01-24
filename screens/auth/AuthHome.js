@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+//import { TouchableOpacity } from "react-native-gesture-handler";
 import constants from "../../Constants";
 import AuthButton from "../../components/AuthButton";
 

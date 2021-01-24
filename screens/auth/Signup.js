@@ -97,7 +97,7 @@ export default ({ navigation }) => {
       setLoading(true);
       const result = await Google.logInAsync({
         androidClientId: "977706808758-oik0umicrd2fq666qlqok257o03t0kqc.apps.googleusercontent.com",
-        iosClientId: "977706808758-mpdpq5e66ttgd4smjv9sc4osd4dedc9n.apps.googleusercontent.com",
+        iosClientId: "977706808758-mpdpq5e66ttgd 4smjv9sc4osd4dedc9n.apps.googleusercontent.com",
         scopes: ['profile', 'email']
       });
       if (result.type === 'success') {
