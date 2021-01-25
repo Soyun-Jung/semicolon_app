@@ -56,6 +56,7 @@ export default ({ navigation }) => {
           returnKeyType="send"
           onSubmitEditing={handleConfirm}
           autoCorrect={false}
+          autoFocus={true}          
         />
         <AuthButton loading={loading} onPress={handleConfirm} text="Confirm" />
       </View>

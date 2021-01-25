@@ -13,6 +13,7 @@ import { ThemeProvider } from 'styled-components';
 import styles from './styles';
 import NavController from './components/NavController';
 import { AuthProvider } from './AuthContext';
+import { StatusBar } from "react-native";
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
@@ -21,7 +22,7 @@ export default function App() {
   const preLoad = async () => {
     
     await Asset.loadAsync([require('./assets/icon.png')]);
-   // await AsyncStorage.clear();
+   //await AsyncStorage.clear();
 
     try {
       await Font.loadAsync({
@@ -66,6 +67,7 @@ export default function App() {
     <ApolloProvider client={client} >
       <ThemeProvider theme={styles}>
         <AuthProvider isLoggedIn={isLoggedIn}>
+          {Platform.OS === "ios" ? <StatusBar barStyle="dark-content" /> : null}
           <NavController />
         </AuthProvider>
       </ThemeProvider>

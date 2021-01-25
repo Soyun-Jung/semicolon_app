@@ -2,10 +2,11 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import React from "react";
 import Home from "../screens/tabs/Home";
-import Search from "../screens/tabs/Search";
+import Search from "../screens/tabs/Search/index";
 import Notifications from "../screens/tabs/Notifications";
 import MessagesLink from "../components/MessagesLink";
 import Profile from "../screens/tabs/Profile";
+import Detail from "../screens/Detail";
 import { createStackNavigator } from 'react-navigation-stack';
 import { Platform } from "react-native";
 import NavIcon from "../components/NavIcon";
@@ -13,45 +14,76 @@ import { AntDesign } from '@expo/vector-icons';
 import styled from "styled-components/native";
 import constants from "../Constants";
 import styles from "../styles";
-
-const stackFactory = (initialRoute, customConfig) =>
-  createStackNavigator({
-    InitialRoute: {
-      screen: initialRoute,
-      navigationOptions: { ...customConfig }
-    }
-  });
+import UserDetail from "../screens/UserDetail";
 
 const Image = styled.Image`
   margin-top : -30px;
   margin-bottom : -30px;
   width: ${constants.width / 3};
+  
 `;
+
+const stackFactory = (initialRoute, customConfig) =>
+  createStackNavigator(
+    {
+      InitialRoute: {
+        screen: initialRoute,
+        navigationOptions: {
+          ...customConfig
+        }
+      },
+      Detail: {
+        screen: Detail,
+        navigationOptions: {
+          headerBackTitle:" ",
+          headerTintColor: styles.blackColor,
+          title: "Photo"
+        }
+      },
+      
+      UserDetail: {
+        screen: UserDetail,
+        navigationOptions: ({ navigation }) => ({
+          title: navigation.getParam("username")
+        })
+      }
+    },
+    {
+      defaultNavigationOptions: {
+        headerBackTitle: " ",
+        headerTintColor:styles.blackColor
+    }
+  });
 
 export default createBottomTabNavigator(
   {
     Home: {
       screen: stackFactory(Home, {
         headerRight: <MessagesLink />,
-        headerTitle: <Image resizeMode={"contain"} source={require("../assets/logo.png")} />
+        headerTitle: ()=> <Image resizeMode={"contain"} source={require("../assets/logo.png")} />
       }),
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <NavIcon
             focused={focused}
-            name={Platform.OS === "ios"? focused ? "home-sharp" : "home-outline" : focused ? "home-sharp" : "home-outline"} />
+            name={ focused ? "home-sharp" : "home-outline"} />
         )
       }
     },
     Search: {
       screen: stackFactory(Search, {
-        title: "Search"
+        headerBackTitle:null
       }),
       navigationOptions: {
+        headerBackTitle:" ",
         tabBarIcon: ({focused}) => (
           <NavIcon
             focused={focused}
-            name={Platform.OS === "ios" ? focused ? "ios-search-sharp" : "ios-search-outline" : focused ? "md-search-sharp" : "md-search-outline"}
+            name={Platform.OS === "ios" ?
+              (focused ? "ios-search-sharp" : "ios-search-outline")
+              :
+              (focused ? "md-search-sharp" : "md-search-outline")
+            }
             size={28}/>
         )
       }
@@ -64,7 +96,8 @@ export default createBottomTabNavigator(
         tabBarIcon: ({focused}) => (
           <NavIcon
             focused={focused}
-            name={Platform.OS === "ios" ? "ios-add" : "md-add"} size={32}/>
+            name={Platform.OS === "ios" ? "ios-add" : "md-add"}
+            size={32} />
         )
       }
     },
@@ -76,7 +109,9 @@ export default createBottomTabNavigator(
         tabBarIcon: ({ focused }) => (
           <AntDesign
             focused={focused}
-            name={focused ? "star" : "staro"} color={focused ? styles.navyColor : styles.darkGreyColor} size={26} />
+            name={focused ? "star" : "staro"}
+            color={focused ? styles.navyColor : styles.darkGreyColor}
+            size={26} />
         )
       }
     },
@@ -87,12 +122,14 @@ export default createBottomTabNavigator(
       navigationOptions: {
         tabBarIcon: ({focused}) => (
           <NavIcon
-            focused={focused} name={Platform.OS === "ios"? focused ? "person" : "person-outline" : focused ? "person" : "person-outline"} />
+            focused={focused}
+            name={focused ? "person" : "person-outline"} />
         )
       }
     }
   },
   {
+    initialRouteName:"Home",
     tabBarOptions: {
       showLabel: false
     }

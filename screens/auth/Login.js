@@ -72,6 +72,7 @@ export default ({ navigation }) => {
           onEndEditing={handleLogin}
           onSubmitEditing={handleLogin}
           autoCorrect={false}
+          autoFocus={true} 
         />
         <AuthButton loading={loading} onPress={handleLogin} text="Log In" />
       </View>

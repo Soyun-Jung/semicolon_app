@@ -13,7 +13,8 @@ export default {
     darkGreyColor: "#999",
     lightGreyColor: "rgb(230,230,230)",
     greyColor:"#FAFAFA",
-    starColor:"#F2CE5A",
+    starColor: "#F2CE5A",
+    searchColor:"#E4E7EC",
     boxBorder: "1px solid #E6E6E6",
     borderRadius: "4px",
     whiteBox: `border-radius:${BORDER_RADIUS};

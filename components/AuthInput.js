@@ -23,7 +23,8 @@ const AuthInput = ({
     returnKeyType = "done",
     onChange,
     onSubmitEditing = () => null,
-    autoCorrect = true
+    autoCorrect = true,
+    autoFocus = true
 }) => (
     <Container>
         <TextInput
@@ -35,6 +36,7 @@ const AuthInput = ({
             onSubmitEditing={onSubmitEditing}
             autoCorrect={autoCorrect}
             value={value}
+            autoFocus={autoFocus}
         />
     </Container>
 );
@@ -54,7 +56,8 @@ AuthInput.propTypes = {
     onChange: PropTypes.func.isRequired,
     returnKeyType: PropTypes.oneOf(["done", "go", "next", "search", "send"]),
     onEndEditing: PropTypes.func,
-    autoCorrect: PropTypes.bool
+    autoCorrect: PropTypes.bool,
+    autoFocus:PropTypes.bool
 };
 
 export default AuthInput;

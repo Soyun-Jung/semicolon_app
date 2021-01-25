@@ -11,6 +11,7 @@ const Container = styled.View`
     props.bgColor ? props.bgColor : props.theme.navyColor};
   padding: 10px;
   margin: 0px 50px;
+  margin-bottom : 5px;
   border-radius: 4px;
   width: ${constants.width / 1.7};
 `;
