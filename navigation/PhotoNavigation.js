@@ -4,6 +4,8 @@ import SelectPhoto from "../screens/photo/SelectPhoto";
 import TakePhoto from "../screens/photo/TakePhoto";
 import UploadPhoto from "../screens/photo/UploadPhoto";
 import styles from "../styles";
+import React from "react";
+import UploadLink from '../components/UploadLink';
 
 const PhotoTabs = createMaterialTopTabNavigator(
     {
@@ -40,6 +42,8 @@ const PhotoTabs = createMaterialTopTabNavigator(
     }
 );
 
+
+
 export default createStackNavigator(
     {
         PhotoTabs: {
@@ -48,15 +52,17 @@ export default createStackNavigator(
                 //headerShown:false,
                 headerBackTitle: " ",
                 headerTintColor: styles.blackColor,
-                title:"Recents Photos"
+                title: "Choose Photo",
+                headerRight: <UploadLink />
             }
+           
         },
-        UploadPhoto: {
+        Upload: {
             screen:UploadPhoto,
             navigationOptions: {
                 headerBackTitle: " ",
                 headerTintColor: styles.blackColor,
-                title:"UploadPhoto"
+                title:"Upload"
             }
         }
         

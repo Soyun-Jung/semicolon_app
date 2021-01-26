@@ -117,7 +117,8 @@ export default createBottomTabNavigator(
     },
     Profile: {
       screen: stackFactory(Profile, {
-        title: "Profile"
+        title: "Profile",
+        //headerRight: <LogOutLink />,
       }),
       navigationOptions: {
         tabBarIcon: ({focused}) => (
