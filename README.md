@@ -2,12 +2,12 @@
 
 ##Screens :
 
-- [ ] Home
-- [ ] Search
-- [ ] Upload
+- [x] Home
+- [x] Search
+- [x] Upload
 - [ ] Notifications (Challenge)
-- [ ] Profile
+- [x] Profile
 - [ ] Edit Profile (Challenge)
-- [ ] Photo Detail
+- [x] Photo Detail
 - [ ] Photo Comments (Challenge)
 - [ ] Photo Likes (Challenge)
