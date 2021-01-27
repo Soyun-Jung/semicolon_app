@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Image, ActivityIndicator, Alert } from "react-native";
+import { Image, ActivityIndicator, Alert, Platform } from "react-native";
 import styled from "styled-components";
 import useInput from "../../hooks/useInput";
 import styles from "../../styles";
@@ -70,9 +70,10 @@ export default ({ navigation }) => {
     const formData = new FormData();
     const name = photo.filename;
     const [, type] = name.split(".");
+    const imageType = Platform.os === "ios" ? type.toLowerCase() : "image/jpeg";
     formData.append("file", {
       name,
-      type: type.toLowerCase(),
+      type: imageType,
       uri: photo.uri
     });
     try {
