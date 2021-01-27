@@ -79,7 +79,7 @@ export default ({ navigation }) => {
       setIsLoading(true);
       const {
         data: { location }
-      } = await axios.post("http://192.168.219.101:4000/api/upload", formData, {
+      } = await axios.post("https://semicolon-backend.herokuapp.com/api/upload", formData, {
         headers: {
           "content-type": "multipart/form-data"
         }
@@ -99,10 +99,12 @@ export default ({ navigation }) => {
       }
       
     } catch (e) {
+      console.log("에러 " + e);
       Alert.alert("Cant upload", "Try later");
     } finally {
       setIsLoading(false);
     }
+    
   };
   return (
     <View>
