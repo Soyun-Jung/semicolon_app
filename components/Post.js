@@ -129,8 +129,8 @@ const Post = ({
               />
             </IconContainer>
           </Touchable>
-          <Touchable>
-            <IconContainer>
+          <Touchable onPress={() => navigation.navigate("CommentDetail", { id })}>
+            <IconContainer >
               <FontAwesome
                 color={styles.blackColor}
                 size={24}
@@ -147,7 +147,7 @@ const Post = ({
         </Caption>
       <Touchable onPress={() => navigation.navigate("CommentDetail", { id })}>
       {/* <Touchable> */}
-         {comments.length> 0?<CommentCount>댓글 {comments.length}개 더보기</CommentCount>:null}
+         {comments.length> 0?<CommentCount>댓글 {comments.length}개 더보기</CommentCount>:<CommentCount>첫번째 댓글의 주인공이 되어주세요!</CommentCount>}
 
         </Touchable>
       </InfoContainer>
