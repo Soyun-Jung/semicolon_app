@@ -7,7 +7,7 @@ import styles from "../../styles";
 import constants from "../../Constants";
 import { gql } from "apollo-boost";
 import { useMutation } from "react-apollo-hooks";
-import { FEED_QUERY } from "../tabs/Home";
+import { FEED_QUERY } from "../home/Home";
 import { ME } from "../tabs/Profile";
 import { GET_USER } from "../UserDetail";
 
@@ -65,7 +65,7 @@ export default ({ navigation }) => {
   });
   const handleSubmit = async () => {
     if (captionInput.value === "" || locationInput.value === "") {
-      Alert.alert("All fields are required");
+      Alert.alert("모든 항목을 입력해 주세요.");
     }
     const formData = new FormData();
     const name = photo.filename;
@@ -101,7 +101,7 @@ export default ({ navigation }) => {
       
     } catch (e) {
       console.log("에러 " + e);
-      Alert.alert("Cant upload", "Try later");
+      Alert.alert("업로드 실패", "다시 시도해 주세요 🤔");
     } finally {
       setIsLoading(false);
     }
@@ -118,14 +118,14 @@ export default ({ navigation }) => {
           <STextInput
             onChangeText={captionInput.onChange}
             value={captionInput.value}
-            placeholder="Caption"
+            placeholder="글 내용"
             multiline={true}
             placeholderTextColor={styles.darkGreyColor}
           />
           <STextInput
             onChangeText={locationInput.onChange}
             value={locationInput.value}
-            placeholder="Location"
+            placeholder="위치"
             multiline={true}
             placeholderTextColor={styles.darkGreyColor}
           />
@@ -133,7 +133,7 @@ export default ({ navigation }) => {
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text>Upload </Text>
+              <Text>업로드 </Text>
             )}
           </Button>
         </Form>

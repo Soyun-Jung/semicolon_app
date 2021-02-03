@@ -1,3 +1,4 @@
+
 import React from "react";
 import styled from "styled-components/native";
 import PropTypes from "prop-types";
@@ -24,7 +25,7 @@ const AuthInput = ({
     onChange,
     onSubmitEditing = () => null,
     autoCorrect = true,
-    autoFocus = true
+    secureTextEntry = false
 }) => (
     <Container>
         <TextInput
@@ -36,7 +37,7 @@ const AuthInput = ({
             onSubmitEditing={onSubmitEditing}
             autoCorrect={autoCorrect}
             value={value}
-            autoFocus={autoFocus}
+            secureTextEntry={secureTextEntry}
         />
     </Container>
 );
@@ -55,9 +56,9 @@ AuthInput.propTypes = {
     autoCapitalize: PropTypes.oneOf(["none", "sentences", "words", "characters"]),
     onChange: PropTypes.func.isRequired,
     returnKeyType: PropTypes.oneOf(["done", "go", "next", "search", "send"]),
-    onEndEditing: PropTypes.func,
+    onSubmitEditing: PropTypes.func,
     autoCorrect: PropTypes.bool,
-    autoFocus:PropTypes.bool
+    secureTextEntry: PropTypes.bool
 };
 
 export default AuthInput;

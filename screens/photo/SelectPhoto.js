@@ -82,9 +82,7 @@ export default ({ navigation }) => {
                 style={{ width: constants.width, height: constants.width }}
                 source={{ uri: selected.uri }}
                 />
-                {/* <Button onPress={handleSelected}>
-                  <Text>Next</Text>
-                </Button> */}
+                
               <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap:"wrap" }}>
                 {allPhotos.map(photo => (
                   <TouchableOpacity

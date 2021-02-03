@@ -9,6 +9,11 @@ import constants from "../Constants";
 import SquarePhoto from "./SquarePhoto";
 import Post from "./Post";
 import { useLogOut } from "../AuthContext";
+import EditProfile from "./EditProfile";
+import { useMutation } from "react-apollo-hooks";
+import { gql } from "apollo-boost";
+import { ME } from "../screens/tabs/Profile";
+import { FEED_QUERY } from "../screens/home/Home";
 
 const ProfileHeader = styled.View`
   padding: 20px;
@@ -88,18 +93,80 @@ margin-top : 5px;
   font-weight: 600;
 `;
 
+const SettingBar = styled.TouchableOpacity`
+  width: ${constants.width - 40}
+  height: 32px
+  backgroundColor: rgba(230,230,230,0.4)
+  padding: 5px
+  borderRadius: 5px
+  margin : auto
+  textAlign: center
+  border:1px #d6d6d6
+`;
+
+const EditText = styled.Text`
+  color: #5c5b5b;
+  text-align: center;
+`;
+
+const FOLLOW = gql`
+  mutation following($id: String!) {
+    following(id: $id)
+  }
+`;
+
+const UNFOLLOW = gql`
+  mutation unfollowing($id: String!) {
+    unfollowing(id: $id)
+  }
+`;
+
 const UserProfile = ({
+  id,
   avatar,
   postsCount,
   followersCount,
   followingCount,
   bio,
-  fullName,
-  posts
+  posts,
+  navigation,
+  isFollowing,
+  isSelf,
+  username,
+  firstName,
+  lastName,
+
 }) => {
   const [isGrid, setIsGrid] = useState(true);
   const toggleGrid = () => setIsGrid(i => !i);
-  return (
+  const [editProfile, setEditProfile] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+      username,
+      avatar,
+      firstName,
+      lastName,
+      bio,
+  });
+    const [isFollowingS, setIsFollowing] = useState(isFollowing);
+    const [followMutation] = useMutation(FOLLOW, {
+        variables: { id },
+        refetchQueries: [{ query: ME, query: FEED_QUERY }]
+    });
+    const [unfollowMutation] = useMutation(UNFOLLOW, {
+        variables: { id },
+        refetchQueries: [{ query: ME, query: FEED_QUERY }]
+    });
+
+    const Following = async () => {
+        if (isFollowingS === true) {
+            setIsFollowing(false);
+            unfollowMutation();
+        } else {
+            setIsFollowing(true);
+            followMutation();
+        }
+    };
+  return (!editProfile ? (
     <View>
       <ProfileHeader>
         <Image
@@ -126,17 +193,26 @@ const UserProfile = ({
       <ProfileMeta>
         <ProfileStats>
           <NameContainer>
-        <Bold>{fullName}</Bold>
-        
-            <Bio>{bio}</Bio>
+            <Bold>{userInfo.firstName + userInfo.lastName}</Bold>
+
+            <Bio>{userInfo.bio}</Bio>
           </NameContainer>
           <NameContainer>
-          <Button1>
-            <TouchableOpacity onPress={useLogOut()}><Text>Log Out</Text></TouchableOpacity>
+            {/*                          */}
+            <Button1>
+              {isSelf ? (<TouchableOpacity onPress={useLogOut()}><Text>로그아웃</Text></TouchableOpacity>)
+                :
+                (<TouchableOpacity onPress={Following}>
+                  {isFollowingS ? <Text>Follow</Text> : <Text>UnFollow</Text>}
+                </TouchableOpacity>)}
             </Button1>
+            {/*                          */}
           </NameContainer>
-          </ProfileStats>
+        </ProfileStats>
       </ProfileMeta>
+      <SettingBar onPress={() => setEditProfile(true)}>
+        <EditText>프로필 편집</EditText>
+      </SettingBar>
       <ButtonContainer>
         <TouchableOpacity onPress={toggleGrid}>
           <Button>
@@ -156,14 +232,16 @@ const UserProfile = ({
             />
           </Button>
         </TouchableOpacity>
-      </ButtonContainer>     
+      </ButtonContainer>
       {isGrid ? <SquareBox>{posts && posts.map(p => {
-              return (<SquarePhoto key={p.id} {...p} />)
-          })}</SquareBox> : <>
-              {posts && posts.map(p => {
-                  return ( <Post key={p.id} {...p} />)
-              })}</>}
-    </View>
+        return (<SquarePhoto key={p.id} {...p} />)
+      })}</SquareBox> : <>
+          {posts && posts.map(p => {
+            return (<Post key={p.id} {...p} />)
+          })}</>}
+    </View>) : (
+      <EditProfile navigation={navigation} userAvatar={avatar} userInfo={userInfo} setUserInfo={setUserInfo} setEditProfile={setEditProfile} />
+    )
   );
 };
 

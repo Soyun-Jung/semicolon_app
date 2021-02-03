@@ -20,6 +20,7 @@ export const POST_FRAGMENT = gql`
       id
       text
       user {
+        avatar
         id
         username
       }
@@ -34,6 +35,8 @@ export const USER_FRAGMENT = gql`
     avatar
     username
     fullName
+    firstName
+    lastName
     isFollowing
     isSelf
     bio

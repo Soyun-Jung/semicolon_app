@@ -12,13 +12,13 @@ const PhotoTabs = createMaterialTopTabNavigator(
         Select: {
             screen: SelectPhoto,
             navigationOptions: {
-                tabBarLabel: "Select"
+                tabBarLabel: "사진 선택"
             }
         },
         Take: {
             screen: TakePhoto,
             navigationOptions: {
-                tabBarLabel: "Take"
+                tabBarLabel: "사진 촬영"
             }
         }
     },
@@ -52,7 +52,7 @@ export default createStackNavigator(
                 //headerShown:false,
                 headerBackTitle: " ",
                 headerTintColor: styles.blackColor,
-                title: "Choose Photo",
+                title: "사진 선택",
                 headerRight: <UploadLink />
             }
            
@@ -62,7 +62,7 @@ export default createStackNavigator(
             navigationOptions: {
                 headerBackTitle: " ",
                 headerTintColor: styles.blackColor,
-                title:"Upload"
+                title:"업로드"
             }
         }
         

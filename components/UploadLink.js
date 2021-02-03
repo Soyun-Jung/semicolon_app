@@ -15,8 +15,15 @@ const Text = styled.Text`
   font-size:15px;
 `;
 
-export default withNavigation(({ navigation }) => (
-  <Container onPress={() => navigation.navigate("Upload", { photo: navigation.getParam("photo") })}>
+export default withNavigation(({ navigation }) => {
+  let navigationName;
+  if (navigation.getParam("profile")) {
+    navigationName = "PUpload";
+  } else {
+    navigationName = "Upload";
+  }
+  return(
+  <Container onPress={() => navigation.navigate(navigationName, { photo: navigation.getParam("photo") })}>
     <Text>Next</Text>
-  </Container>
-));
+  </Container>)
+});
