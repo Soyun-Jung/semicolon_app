@@ -10,6 +10,7 @@ import styles from "../styles";
 import { useMutation } from "react-apollo-hooks";
 import { withNavigation } from "react-navigation";
 import Comments from "./Comments";
+import Popup from "../screens/Popup";
 
 export const TOGGLE_LIKE = gql`
   mutation toggelLike($postId: String!) {
@@ -84,7 +85,7 @@ const Post = ({
       await toggleLikeMutaton();
     } catch (e) { }
   };
-  return (<Container>
+  return ( <Container>
       <Header>
         <Touchable
           onPress={() => navigation.navigate("UserDetail", { username: user.username })}>

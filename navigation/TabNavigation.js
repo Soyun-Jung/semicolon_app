@@ -17,6 +17,7 @@ import styles from "../styles";
 import UserDetail from "../screens/UserDetail";
 import CommentDetail from "../screens/CommentDetail";
 import NavigationContainer from "./EventNavigation/index";
+import StoryLink from "../components/StoryLink";
 
 const Image = styled.Image`
   margin-top : -30px;
@@ -72,6 +73,7 @@ export default createBottomTabNavigator(
       screen: stackFactory(Home, {
         headerRight: <MessagesLink />,
         // headerTitle: ()=> <Image resizeMode={"contain"} source={require("../assets/logo.png")} />
+        headerLeft:<StoryLink />,
         headerTitle:()=><NavigationContainer />
       }),
       navigationOptions: {

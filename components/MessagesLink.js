@@ -10,7 +10,7 @@ import NavIcon from "./NavIcon";
 //import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 const Container = styled.TouchableOpacity`
-  padding-right: 20px;
+  padding-right: 10px;
 `;
 
 export default withNavigation(({ navigation }) => (

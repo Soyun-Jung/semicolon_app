@@ -7,6 +7,7 @@ export const POST_FRAGMENT = gql`
     caption
     user {
       id
+      isSelf
       avatar
       username
     }
@@ -43,9 +44,44 @@ export const USER_FRAGMENT = gql`
     followingCount
     followersCount
     postsCount
+    stories {
+      id
+      caption
+      createdAt
+    }
     posts {
       ...PostParts
     }
   }
   ${POST_FRAGMENT}
+`;
+
+export const STORY_FRAGMENT = gql`
+  fragment StoryParts on Story {
+    id
+    caption
+    user {
+      id
+      isSelf
+      avatar
+      username
+    }
+    seenUsers {
+      id
+      isSelf
+      avatar
+      username
+    }
+    tagUser {
+      id
+      isSelf
+      avatar
+      username
+    }
+    files {
+      id
+      url
+    }
+    createdAt
+  }
 `;
