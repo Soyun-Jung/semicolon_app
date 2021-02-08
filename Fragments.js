@@ -52,6 +52,9 @@ export const USER_FRAGMENT = gql`
     posts {
       ...PostParts
     }
+    following{
+      id
+    }
   }
   ${POST_FRAGMENT}
 `;

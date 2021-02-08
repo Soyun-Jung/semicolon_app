@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Image, ActivityIndicator, Alert, Platform } from "react-native";
-import styled from "styled-components";
+import styled from "styled-components/native";
 import useInput from "../../hooks/useInput";
 import styles from "../../styles";
 import constants from "../../Constants";
@@ -48,6 +48,14 @@ const Button = styled.TouchableOpacity`
   justify-content: center;
 `;
 
+// const Button = styled.TouchableOpacity`
+//   background-color: ${props => props.theme.blueColor};
+//   padding: 10px;
+//   border-radius: 4px;
+//   align-items: center;
+//   justify-content: center;
+// `;
+
 const Text = styled.Text`
   color: white;
   font-weight: 600;
@@ -55,68 +63,86 @@ const Text = styled.Text`
 
 export default ({ navigation }) => {
   const [loading, setIsLoading] = useState(false);
-  const photo = navigation.getParam("story");
+  const photo = navigation.getParam("photo");
+  const story = navigation.getParam("story");
+  const uri = navigation.getParam("uri");
+
   const captionInput = useInput();
   const tagUserInput = useInput();
+
   const [uploadMutation] = useMutation(UPLOADSTORY, {
-    refetchQueries: () => [{ query: FEED_QUERY }, {query:ME}]
+    refetchQueries: () => [{ query: FEED_QUERY }, { query: ME }]
   });
+
+  let imageType // 사진인지 비디오인지 정하는 변수
+  let uploadUri // 비디오는 사진과 가져오는 uri가 달라서 구분해 줘야함.
+  let imgUri // 원안에 들어갈때 뜨는 사진
+  let name // 파일명
+  let tagUsers // 태그할 사람들 넣을 변수
+
+  if (navigation.getParam("photo")) {
+    imgUri = photo.uri
+    name = photo.filename;
+    const [, type] = name.split(".");
+    uploadUri = photo.uri
+    imageType = Platform.os === "ios" ? type.toLowerCase() : "image/jpeg";
+  } else if (navigation.getParam("story")) {
+    imgUri = story.uri
+    name = story.filename;
+    uploadUri = uri
+    imageType = "mp4";
+  }
   const handleSubmit = async () => {
     const formData = new FormData();
-    const uri = photo.uri;
-    const name = photo.filename;
-    //const [suri, type] = uri.split("=");
-    
-    console.log("uri", uri);
-    console.log("type",type);
-    //const videoType = Platform.os === "ios" ? type.toLowerCase() : "mp4";
-    //console.log(photo.uri);
-    const suri = uri.replaceAll("MOV", "mp4")
-    const videoType = "mp4";
-    console.log("suri",suri);
     formData.append("file", {
       name,
-      type: videoType,
-      uri: suri
+      type: imageType,
+      uri: uploadUri,
     });
+
     try {
       setIsLoading(true);
-      const {
-        data: { location }
-      } = await axios.post("https://semicolon-backend.herokuapp.com/api/upload", formData, {
-        headers: {
-          "content-type": "multipart/form-data"
-        }
+      const { data: { location } } = await axios.post("https://semicolon-backend.herokuapp.com/api/upload", formData, {
+        headers: { 'Content-Type': 'multipart/form-data', }
       });
       console.log(location);
-      console.log(tagUserInput);
-      const tagUsers = tagUserInput.value.split(" ");
-      console.log(tagUsers);
+
+      //console.log(tagUserInput.value);
+
+      // if (tagUserInput.value != "" || tagUserInput.value != "undefined" ) {
+      //   tagUsers = tagUserInput.value.split(" ");
+      // }
+
+      if (tagUserInput.value) {
+         tagUsers = tagUserInput.value.split(" ");
+      }
+      else {
+        tagUsers = "";
+      }
+
       await uploadMutation({
-          variables: {
-            files: [location],
-            caption: captionInput.value,
-            tagUser: tagUsers
-          }
+        variables: {
+          files: [location],
+          caption: captionInput.value,
+          tagUser: tagUsers
+        }
       });
 
-      //if (result) {
-        navigation.navigate("TabNavigation");
-      //}
-      
+      navigation.navigate("TabNavigation");
+
     } catch (e) {
       console.log("에러 " + e);
       Alert.alert("업로드 실패", "다시 시도해 주세요 🤔");
     } finally {
       setIsLoading(false);
     }
-    
+
   };
   return (
     <View>
       <Container>
         <Image
-          source={{ uri: photo.uri }}
+          source={{ uri: imgUri }}
           style={{ height: 80, width: 80, marginRight: 30 }}
         />
         <Form>
@@ -138,8 +164,8 @@ export default ({ navigation }) => {
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text>업로드 </Text>
-            )}
+                <Text>업로드 </Text>
+              )}
           </Button>
         </Form>
       </Container>

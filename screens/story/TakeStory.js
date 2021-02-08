@@ -25,82 +25,90 @@ const Button = styled.View`
 `;
 
 export default ({ navigation }) => {
-  return null;
-  // const cameraRef = useRef();
-  // const [canTakePhoto, setCanTakePhoto] = useState(true);
-  // const [loading, setLoading] = useState(true);
-  // const [hasPermission, setHasPermission] = useState(false);
-  // const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
-  // const takePhoto = async () => {
-  //   if (!canTakePhoto) {
-  //     return;
-  //   }
-  //   try {
-  //     setCanTakePhoto(false);
-  //     const { uri } = await cameraRef.current.takePictureAsync({
-  //       quality: 1
-  //     });
-  //     const asset = await MediaLibrary.createAssetAsync(uri);
-  //     setCanTakePhoto(true);
-  //     navigation.navigate("StoryUpload", { photo: asset });
-  //   } catch (e) {
-  //     console.log(e);
-  //     setCanTakePhoto(true);
-  //   }
-  // };
-  // const askPermission = async () => {
-  //   try {
-  //     const { status } = await Permissions.askAsync(Permissions.CAMERA);
+  //return null;
+  if (navigation) {
+    const cameraRef = useRef();
+  
+  
+    const [canTakePhoto, setCanTakePhoto] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [hasPermission, setHasPermission] = useState(false);
+    const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
+    const takePhoto = async () => {
+      if (!canTakePhoto) {
+        return;
+      }
+      try {
+        setCanTakePhoto(false);
+        const { uri } = await cameraRef.current.takePictureAsync({
+          quality: 1
+        });
+        const asset = await MediaLibrary.createAssetAsync(uri);
+        setCanTakePhoto(true);
+        navigation.navigate("StoryUpload", { photo: asset });
+      } catch (e) {
+        console.log(e);
+        setCanTakePhoto(true);
+      }
+    };
+    const askPermission = async () => {
+      try {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
-  //     if (status === "granted") {
-  //       setHasPermission(true);
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //     setHasPermission(false);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  // const toggleType = () => {
-  //   if (cameraType === Camera.Constants.Type.front) {
-  //     setCameraType(Camera.Constants.Type.back);
-  //   } else {
-  //     setCameraType(Camera.Constants.Type.front);
-  //   }
-  // };
-  // useEffect(() => {
-  //   askPermission();
-  // }, []);
-  // return (
-  //   <View>
-  //     {loading ? (
-  //       <Loader />
-  //     ) : hasPermission ? (
-  //       <>
-  //         <Camera
-  //           ref={cameraRef}
-  //           type={cameraType}
-  //           style={{
-  //             justifyContent: "flex-end",
-  //             padding: 15,
-  //             width: constants.width,
-  //             height: constants.width
-  //           }}
-  //         >
-  //           <TouchableOpacity onPress={toggleType}>
-  //             <Icon>
-  //               <Ionicons name="camera-reverse-outline" size={32} color="white" />
-  //             </Icon>
-  //           </TouchableOpacity>
-  //         </Camera>
-  //         <View>
-  //           <TouchableOpacity onPress={takePhoto} disabled={!canTakePhoto}>
-  //             <Button />
-  //           </TouchableOpacity>
-  //         </View>
-  //       </>
-  //     ) : null}
-  //   </View>
-  // );
+        if (status === "granted") {
+          setHasPermission(true);
+        }
+      } catch (e) {
+        console.log(e);
+        setHasPermission(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    const toggleType = () => {
+      if (cameraType === Camera.Constants.Type.front) {
+        setCameraType(Camera.Constants.Type.back);
+      } else {
+        setCameraType(Camera.Constants.Type.front);
+      }
+    };
+    useEffect(() => {
+      askPermission();
+    }, []);
+    
+    return (
+      <View>
+        {loading ? (
+          <Loader />
+        ) : hasPermission ? (
+          <>
+            <Camera
+              ref={cameraRef}
+              type={cameraType}
+              style={{
+                justifyContent: "flex-end",
+                padding: 15,
+                width: constants.width,
+                height: constants.width
+              }}
+            >
+              <TouchableOpacity onPress={toggleType}>
+                <Icon>
+                  <Ionicons name="camera-reverse-outline" size={32} color="white" />
+                </Icon>
+              </TouchableOpacity>
+            </Camera>
+            <View>
+              <TouchableOpacity onPress={takePhoto} disabled={!canTakePhoto}>
+                <Button />
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : null}
+      </View>
+    );
+  }
+    else {
+    return null;
+  }
 };

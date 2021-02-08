@@ -25,20 +25,24 @@ const Button = styled.View`
 `;
 
 export default ({ navigation }) => {
-  const cameraRef = useRef();
+  
+  if (navigation) {
+    const cameraRef = useRef();
+ 
   const [video, setVideo] = useState(null);
+  const [uri, setUri] = useState(null);
+  const [type, setType] = useState(null);
   const [recording, setRecording] = useState(false);
   const [showCamera, setsShowCamera] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const _saveVideo = async () => {
-    const asset = await MediaLibrary.createAssetAsync(video.uri);
+    const asset = await MediaLibrary.createAssetAsync(uri);
+    console.log(asset)
     if (asset) {
-      console.log(asset.uri)
-      navigation.navigate("StoryUpload", { story: asset });
+      navigation.navigate("StoryUpload", { type: type, story: asset, uri });
       setVideo(null)
     }
-
   };
 
   const _StopRecord = async () => {
@@ -48,16 +52,23 @@ export default ({ navigation }) => {
   const _StartRecord = async () => {
     // if (cameraRef) {
     setRecording(true)
-    const svideo = await cameraRef.current.recordAsync();
-    setVideo(svideo)
+    const { uri, codec = "mp4" } = await cameraRef.current.recordAsync();
+    console.log(uri)
+    setUri(uri)
+    setType(codec)
+    // setVideo(svideo)
     // }
   }
-  const toogleRecord = () => {
-    if (recording) {
-      _StopRecord();
-    } else {
+  const pushVideo = () => {
+     
       _StartRecord();
-    }
+    
+  };
+
+    const pullVideo = () => {
+    
+      _StopRecord();
+    
   };
 
   const _showCamera = async () => {
@@ -73,7 +84,9 @@ export default ({ navigation }) => {
     } finally {
       setLoading(false);
     }
-  };
+    };
+    
+
 
   useEffect(() => {
     _showCamera();
@@ -94,7 +107,7 @@ export default ({ navigation }) => {
               width: "100%"
             }}
           >
-            {video && (
+            {uri && (
               <TouchableOpacity
                 onPress={_saveVideo}
                 style={{
@@ -106,17 +119,20 @@ export default ({ navigation }) => {
                 <Text style={{ textAlign: "center" }}>save</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              onPress={toogleRecord}
-              style={{
-                padding: 20,
-                width: "100%",
-                backgroundColor: recording ? "#ef4f84" : "#4fef97"
-              }}
+              <TouchableOpacity
+                onLongPress={pushVideo} delayLongPress={200}
+                onPressOut={pullVideo}
+              //onPress={toogleRecord}
+              // style={{
+              //   padding: 20,
+              //   width: "100%",
+              //   backgroundColor: recording ? "#ef4f84" : "#4fef97"
+              // }}
             >
-              <Text style={{ textAlign: "center" }}>
+              {/* <Text style={{ textAlign: "center" }}>
                 {recording ? "Stop" : "Record"}
-              </Text>
+              </Text> */}
+                <Button />
             </TouchableOpacity>
           </Camera>
           {/* <View>
@@ -124,8 +140,16 @@ export default ({ navigation }) => {
               <Button />
             </TouchableOpacity>
           </View> */}
-        </>
+           
+          </>
+          
+          
       ) : null}
     </View>
   )
+  }
+  else {
+    return null;
+  }
+  
 }
