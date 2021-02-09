@@ -11,7 +11,7 @@ import { FEED_QUERY } from "../home/Home";
 import { ME } from "../tabs/Profile";
 
 const UPLOADSTORY = gql`
-  mutation uploadStory($caption: String, $files: [String!]!, $tagUser: [String!]) {
+  mutation uploadStory($caption: String, $files: String!, $tagUser: [String!]) {
     uploadStory(caption: $caption, files: $files, tagUser: $tagUser) {
       id
       caption
@@ -122,7 +122,7 @@ export default ({ navigation }) => {
 
       await uploadMutation({
         variables: {
-          files: [location],
+          files: location,
           caption: captionInput.value,
           tagUser: tagUsers
         }

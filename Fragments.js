@@ -65,24 +65,22 @@ export const STORY_FRAGMENT = gql`
     caption
     user {
       id
-      isSelf
       avatar
       username
     }
     seenUsers {
       id
-      isSelf
       avatar
       username
     }
     tagUser {
       id
-      isSelf
       avatar
       username
     }
     files {
       id
+      name
       url
     }
     createdAt

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, Text,Image } from 'react-native';
 import Modal from 'react-native-modal';
 import { useMutation, useQuery } from 'react-apollo-hooks';
 import { gql } from "apollo-boost";
@@ -7,7 +7,7 @@ import { FEED_QUERY } from '../home/Home';
 import constants from "../../Constants";
 import { STORY_FRAGMENT } from '../../Fragments';
 import styled from 'styled-components';
-
+import { Video } from 'expo-av';
 
 const HIDE_STORY = gql`
   mutation hideStory(
@@ -39,7 +39,7 @@ const InputButton = styled.TouchableOpacity`
     `
 
 export default ({ id, visibles, setModalUp }) => {
-    console.log(id)
+    //console.log(id)
     const [menu, setMenu] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -48,7 +48,7 @@ export default ({ id, visibles, setModalUp }) => {
 
     const { data, loading: Sloading } = useQuery(GETSTORY_QUERY,
         { variables: { id: id } });
-    console.log(data)
+    console.log(data);
     const hideStory = async () => {
         setLoading(true);
         await hideStoryMutation();
@@ -64,12 +64,31 @@ export default ({ id, visibles, setModalUp }) => {
                     <TouchableWithoutFeedback onPress={() => setModalUp(!visibles)}>
                         <Modal visible={visibles}
                             animationType="slide"
-                        // 비디오
-                        // 메세지 보내는 인풋창
                         >
                             <View style={styles.modalView} >
                                 <View style={{ marginBottom: 10, width: 100 }}>
-
+                                    {data && data.getStories.map(story => {
+                                        console.log(story.files);
+                                         story.files.url.endsWith('jpg') ? (
+                                            <Image
+                                                style={{ width: constants.width, height: constants.width}}
+                                                key={story.files.id}
+                                                source={{ uri: story.files.url }}
+                                            />
+                                        ) : (
+                                            <Video
+                                                source={{ uri: story.files.url }}
+                                                rate={1.0}
+                                                volume={1.0}
+                                                isMuted={false}
+                                                resizeMode="cover"
+                                                shouldPlay
+                                                isLooping
+                                                style={{ width: 300, height: 300 }}
+                                            />)
+                                            
+                                        
+                                    })}
 
                                 </View>
                             </View >

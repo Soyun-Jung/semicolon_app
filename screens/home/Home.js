@@ -9,6 +9,7 @@ import Post from "../../components/Post";
 import { POST_FRAGMENT, USER_FRAGMENT } from "../../Fragments";
 import { LinearGradient } from 'expo-linear-gradient';
 import StoryDetail from "../story/StoryDetail";
+import { withNavigation } from "react-navigation";
 
 export const FEED_QUERY = gql`
   {
@@ -49,7 +50,7 @@ export const ME = gql`
 const Story = styled.TouchableOpacity`
 `;
 
-export default () => {
+export default ({navigation}) => {
   let localStyles = styles()
 
   const [refreshing, setRefreshing] = useState(false);
@@ -114,7 +115,7 @@ export default () => {
                       <Text style={{ textAlign: 'center', marginTop: 5 }}>내 스토리</Text>
                     </Story>
                     :
-                    <Story>
+                    <Story onPress={() => navigation.navigate("TakeStory")}>
                       <LinearGradient start={[1, 0.5]}
                         end={[0, 0]}
                         colors={['lightgray', 'lightgray']}
