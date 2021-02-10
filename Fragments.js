@@ -80,7 +80,6 @@ export const STORY_FRAGMENT = gql`
     }
     files {
       id
-      name
       url
     }
     createdAt

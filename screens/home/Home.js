@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,Component } from "react";
 import styled from "styled-components/native";
 import { gql } from "apollo-boost";
 import Loader from "../../components/Loader";
@@ -8,8 +8,7 @@ import { Thumbnail } from 'native-base';
 import Post from "../../components/Post";
 import { POST_FRAGMENT, USER_FRAGMENT } from "../../Fragments";
 import { LinearGradient } from 'expo-linear-gradient';
-import StoryDetail from "../story/StoryDetail";
-import { withNavigation } from "react-navigation";
+import StoriesContainer from "../story/StoryDetail";
 
 export const FEED_QUERY = gql`
   {
@@ -39,10 +38,18 @@ export const SEEN_QUERY = gql`
 export const ME = gql`
   {
     me {
-      ...UserParts
+      id
+      username
+      avatar
+      stories {
+        id
+        state
+        files{
+          url
+        }
+      }
     }
   }
-  ${USER_FRAGMENT}
 `;
 
 
@@ -54,7 +61,8 @@ export default ({navigation}) => {
   let localStyles = styles()
 
   const [refreshing, setRefreshing] = useState(false);
-  const [modalUp, setModalUp] = useState(false);
+  const [detailUp, setDetailUp] = useState(false);
+  const [menuUp, setMenuUp] = useState(false);
   const [nowId, setNowId] = useState(null);
   const { loading, data, refetch } = useQuery(FEED_QUERY);
   const { loading: sloading, data: sdata, refetch: srefetch } = useQuery(STORY_QUERY);
@@ -65,11 +73,14 @@ export default ({navigation}) => {
   //   }
   // });
 
+  //console.log("data",mdata);
+
   const refresh = async () => {
     try {
       setRefreshing(true);
       await refetch();
       await srefetch();
+      await mrefetch();
     } catch (e) {
       console.log(e);
     } finally {
@@ -102,8 +113,18 @@ export default ({navigation}) => {
 
                   {mdata &&
                     mdata.me &&
-                    mdata.me.stories ?
-                   <Story>
+                    mdata.me.stories[0] ?
+                    <Story 
+                    onPress={() => {
+                        setNowId(mdata.me.id)
+                        setDetailUp(!detailUp)
+                  }}
+                    onLongPress={()=> {
+                      setNowId(mdata.me.id)
+                      setMenuUp(!menuUp)
+                    }}>
+                      {detailUp ? < StoriesContainer avatar={mdata.me.avatar} name={mdata.me.username} id={mdata.me.id} detailUp={detailUp} setDetailUp={setDetailUp} /> : null}
+                      {/* {menuUp ? < StoryMenu id={nowId} menuUp={menuUp} setMenuUp={setMenuUp} /> : null} */}
                       <LinearGradient start={[1, 0.5]}
                         end={[0, 0]}
                         colors={['#e3179e', 'tomato', 'orange', 'yellow']}
@@ -126,7 +147,6 @@ export default ({navigation}) => {
                       </LinearGradient>
                       <Text style={{ color: 'gray', textAlign: 'center', marginTop: 5 }}>내 스토리</Text>
                     </Story>
-
                   }
 
                   {sdata &&
@@ -135,10 +155,15 @@ export default ({navigation}) => {
                       // followings.stories.map(
                       //   story => story.id === mdata.me.clickedStories.id ?
                       <Story onPress={() => {
+                        // navigation.navigate("StoryUp",{id : followings.id})
                         setNowId(followings.id)
-                        setModalUp(!modalUp)
+                        setDetailUp(!detailUp)
+                      }} onLongPress={()=> {
+                        setNowId(mdata.me.id)
+                        setMenuUp(!menuUp)
                       }}>
-                        {modalUp ? < StoryDetail id={nowId} visibles={modalUp} setModalUp={setModalUp} /> : null}
+                        {detailUp ? < StoriesContainer avatar={followings.avatar} name={followings.username} id={nowId} detailUp={detailUp} setDetailUp={setDetailUp} /> : null}
+                        {/* {menuUp ? < StoryMenu id={nowId} menuUp={menuUp} setMenuUp={setMenuUp} /> : null} */}
                         <LinearGradient start={[1, 0.5]}
                           end={[0, 0]}
                           colors={['#e3179e', 'tomato', 'orange', 'yellow']}

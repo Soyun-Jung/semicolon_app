@@ -11,7 +11,7 @@ import { FEED_QUERY } from "../home/Home";
 import { ME } from "../tabs/Profile";
 
 const UPLOADSTORY = gql`
-  mutation uploadStory($caption: String, $files: String!, $tagUser: [String!]) {
+  mutation uploadStory($caption: String, $files: String, $tagUser: [String!]) {
     uploadStory(caption: $caption, files: $files, tagUser: $tagUser) {
       id
       caption
@@ -48,14 +48,6 @@ const Button = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-// const Button = styled.TouchableOpacity`
-//   background-color: ${props => props.theme.blueColor};
-//   padding: 10px;
-//   border-radius: 4px;
-//   align-items: center;
-//   justify-content: center;
-// `;
-
 const Text = styled.Text`
   color: white;
   font-weight: 600;
@@ -63,8 +55,6 @@ const Text = styled.Text`
 
 export default ({ navigation }) => {
   const [loading, setIsLoading] = useState(false);
-  const photo = navigation.getParam("photo");
-  const story = navigation.getParam("story");
   const uri = navigation.getParam("uri");
 
   const captionInput = useInput();
@@ -74,19 +64,21 @@ export default ({ navigation }) => {
     refetchQueries: () => [{ query: FEED_QUERY }, { query: ME }]
   });
 
-  let imageType // 사진인지 비디오인지 정하는 변수
-  let uploadUri // 비디오는 사진과 가져오는 uri가 달라서 구분해 줘야함.
-  let imgUri // 원안에 들어갈때 뜨는 사진
-  let name // 파일명
-  let tagUsers // 태그할 사람들 넣을 변수
+  let imageType; // 사진인지 비디오인지 정하는 변수
+  let uploadUri; // 비디오는 사진과 가져오는 uri가 달라서 구분해 줘야함.
+  let imgUri; // 원안에 들어갈때 뜨는 사진
+  let name; // 파일명
+  let tagUsers; // 태그할 사람들 넣을 변수
 
   if (navigation.getParam("photo")) {
+     const photo = navigation.getParam("photo");
     imgUri = photo.uri
     name = photo.filename;
     const [, type] = name.split(".");
     uploadUri = photo.uri
     imageType = Platform.os === "ios" ? type.toLowerCase() : "image/jpeg";
   } else if (navigation.getParam("story")) {
+     const story = navigation.getParam("story");
     imgUri = story.uri
     name = story.filename;
     uploadUri = uri
