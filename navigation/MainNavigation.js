@@ -5,7 +5,6 @@ import PhotoNavigation from "./PhotoNavigation";
 import MessageNavigation from "./MessageNavigation";
 import UploadNavigation from "./UploadNavigation";
 import StoryNavigation from "./StoryNavigation";
-import TestNavigation from "./TestNavigation";
 
 const MainNavigation = createStackNavigator(
     {
@@ -13,7 +12,7 @@ const MainNavigation = createStackNavigator(
         PhotoNavigation,
         MessageNavigation,
         UploadNavigation,
-        StoryNavigation,
+        StoryNavigation
 }   ,
     {
         headerMode: "none",

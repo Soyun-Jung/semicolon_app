@@ -11,20 +11,11 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { Platform } from "react-native";
 import NavIcon from "../components/NavIcon";
 import { AntDesign } from '@expo/vector-icons'; 
-import styled from "styled-components/native";
-import constants from "../Constants";
 import styles from "../styles";
+import StoryLink from "../components/StoryLink";
 import UserDetail from "../screens/UserDetail";
 import CommentDetail from "../screens/CommentDetail";
 import NavigationContainer from "./EventNavigation/index";
-import StoryLink from "../components/StoryLink";
-
-const Image = styled.Image`
-  margin-top : -30px;
-  margin-bottom : -30px;
-  width: ${constants.width / 3};
-  
-`;
 
 const stackFactory = (initialRoute, customConfig) =>
   createStackNavigator(
@@ -72,7 +63,6 @@ export default createBottomTabNavigator(
     Home: {
       screen: stackFactory(Home, {
         headerRight: <MessagesLink />,
-        // headerTitle: ()=> <Image resizeMode={"contain"} source={require("../assets/logo.png")} />
         headerLeft:<StoryLink />,
         headerTitle:()=><NavigationContainer />
       }),

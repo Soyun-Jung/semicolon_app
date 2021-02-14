@@ -5,6 +5,10 @@ export const POST_FRAGMENT = gql`
     id
     location
     caption
+    hashes {
+      id
+      tag
+    }
     user {
       id
       isSelf
@@ -38,50 +42,36 @@ export const USER_FRAGMENT = gql`
     fullName
     firstName
     lastName
+    state
     isFollowing
     isSelf
     bio
-    followingCount
-    followersCount
-    postsCount
-    stories {
+    rooms {
       id
-      caption
-      createdAt
-    }
-    posts {
-      ...PostParts
+      participants{
+        id
+      }
     }
     following{
       id
+      username
+      avatar
+    }
+    followingCount
+    followersCount
+    postsCount
+    posts {
+      ...PostParts
     }
   }
   ${POST_FRAGMENT}
 `;
 
-export const STORY_FRAGMENT = gql`
-  fragment StoryParts on Story {
-    id
-    caption
-    user {
-      id
-      avatar
-      username
+export const ME = gql`
+  {
+    me {
+      ...UserParts
     }
-    seenUsers {
-      id
-      avatar
-      username
-    }
-    tagUser {
-      id
-      avatar
-      username
-    }
-    files {
-      id
-      url
-    }
-    createdAt
   }
+  ${USER_FRAGMENT}
 `;

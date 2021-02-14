@@ -1,42 +1,29 @@
-import React, { useState,Component } from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components/native";
 import { gql } from "apollo-boost";
 import Loader from "../../components/Loader";
-import { useQuery } from "react-apollo-hooks";
+import { useQuery,useMutation } from "react-apollo-hooks";
 import { ScrollView, RefreshControl, View, Text, StyleSheet } from "react-native";
-import { Thumbnail } from 'native-base';
 import Post from "../../components/Post";
-import { POST_FRAGMENT, USER_FRAGMENT } from "../../Fragments";
+import { POST_FRAGMENT } from "../../Fragments";
+import * as Permissions from "expo-permissions";
+import * as Notifications from "expo-notifications";
+import { Thumbnail } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
-import StoriesContainer from "../story/StoryDetail";
+import StoryUp from "../story/StoryUp";
+import StoryMenu from "../story/StoryMenu";
+
+export const MO_TOKEN = gql`
+  mutation editMoToken($moToken:String!) {
+    editMoToken(moToken:$moToken)
+  }
+`;
 
 export const FEED_QUERY = gql`
   {
     seeFeed {
       ...PostParts
     }
-  }
-  ${POST_FRAGMENT}
-`;
-
-export const STORY_QUERY = gql`
-  {
-    feedStories {
-      id
-      avatar
-      username
-    }
-  }
-`;
-
-export const SEEN_QUERY = gql`
-   mutation clickedStory($storyId : String!) {
-      clickedStory(storyId:$storyId)
-    }
-`;
-
-export const ME = gql`
-  {
     me {
       id
       username
@@ -45,57 +32,72 @@ export const ME = gql`
         id
         state
         files{
+          id
           url
         }
       }
     }
+    feedStories {
+      id
+      avatar
+      username
+    }
   }
+  ${POST_FRAGMENT}
 `;
-
 
 
 const Story = styled.TouchableOpacity`
 `;
 
-export default ({navigation}) => {
-  let localStyles = styles()
 
-  const [refreshing, setRefreshing] = useState(false);
+export default ({ navigation }) => {
+  
+  let localStyles = styles()
   const [detailUp, setDetailUp] = useState(false);
   const [menuUp, setMenuUp] = useState(false);
   const [nowId, setNowId] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const { loading, data, refetch } = useQuery(FEED_QUERY);
-  const { loading: sloading, data: sdata, refetch: srefetch } = useQuery(STORY_QUERY);
-  const { loading: mloading, data: mdata, refetch: mrefetch } = useQuery(ME);
-  // const [seenUserMutation] = useMutation(SEEN_QUERY, {
-  //   variables: {
-  //     storyId: id
-  //   }
-  // });
-
-  //console.log("data",mdata);
 
   const refresh = async () => {
     try {
       setRefreshing(true);
       await refetch();
-      await srefetch();
-      await mrefetch();
     } catch (e) {
       console.log(e);
     } finally {
       setRefreshing(false);
     }
   };
+  
+  const [notificationStatus, setStatus] = useState(false);
+  const ask = async () => {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    setStatus(status);
+    let token = await Notifications.getExpoPushTokenAsync();
+    Notifications.setBadgeCountAsync(0)
+    
+    MoTokenMutation({
+    variables: {
+    moToken: token.data
+      }
+    })
+  };
+  const [MoTokenMutation] = useMutation(MO_TOKEN);
 
-  return (
+  useEffect(() => { 
+    ask();
+  },[])
+  
+ return (
     <ScrollView
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={refresh} />
-      }
-    >
+      }>
+
       {
-        mloading && sloading && loading ?
+        loading ?
           (<Loader />)
           :
           (<>
@@ -111,26 +113,25 @@ export default ({navigation}) => {
                   }}
                   horizontal={true} >
 
-                  {mdata &&
-                    mdata.me &&
-                    mdata.me.stories[0] ?
+                  {data &&
+                    data.me &&
+                    data.me.stories[0] ?
                     <Story 
                     onPress={() => {
-                        setNowId(mdata.me.id)
+                        setNowId(data.me)
                         setDetailUp(!detailUp)
                   }}
-                    onLongPress={()=> {
-                      setNowId(mdata.me.id)
+                      onLongPress={() => {
+                      setNowId(data.me)
                       setMenuUp(!menuUp)
                     }}>
-                      {detailUp ? < StoriesContainer avatar={mdata.me.avatar} name={mdata.me.username} id={mdata.me.id} detailUp={detailUp} setDetailUp={setDetailUp} /> : null}
-                      {/* {menuUp ? < StoryMenu id={nowId} menuUp={menuUp} setMenuUp={setMenuUp} /> : null} */}
+                      {detailUp ? < StoryUp userInfo={nowId} detailUp={detailUp} setDetailUp={setDetailUp} /> : null}
                       <LinearGradient start={[1, 0.5]}
                         end={[0, 0]}
                         colors={['#e3179e', 'tomato', 'orange', 'yellow']}
                         style={localStyles.linearGradient}>
                         <View style={localStyles.button}>
-                          <Thumbnail style={{ marginHorizontal: 'auto', borderColor: 'white', borderWidth: 2 }} source={{ uri: mdata.me.avatar }} />
+                          <Thumbnail style={{ marginHorizontal: 'auto', borderColor: 'white', borderWidth: 2 }} source={{ uri: data.me.avatar }} />
                         </View>
                       </LinearGradient>
                       <Text style={{ textAlign: 'center', marginTop: 5 }}>내 스토리</Text>
@@ -149,21 +150,14 @@ export default ({navigation}) => {
                     </Story>
                   }
 
-                  {sdata &&
-                    sdata.feedStories &&
-                    sdata.feedStories.map(followings =>
-                      // followings.stories.map(
-                      //   story => story.id === mdata.me.clickedStories.id ?
+                  {data &&
+                    data.feedStories &&
+                    data.feedStories.map(followings =>
                       <Story onPress={() => {
-                        // navigation.navigate("StoryUp",{id : followings.id})
-                        setNowId(followings.id)
+                        setNowId(followings)
                         setDetailUp(!detailUp)
-                      }} onLongPress={()=> {
-                        setNowId(mdata.me.id)
-                        setMenuUp(!menuUp)
-                      }}>
-                        {detailUp ? < StoriesContainer avatar={followings.avatar} name={followings.username} id={nowId} detailUp={detailUp} setDetailUp={setDetailUp} /> : null}
-                        {/* {menuUp ? < StoryMenu id={nowId} menuUp={menuUp} setMenuUp={setMenuUp} /> : null} */}
+                      }} >
+                        {menuUp ? < StoryMenu userInfo={nowId} menuUp={menuUp} setMenuUp={setMenuUp} /> : null}
                         <LinearGradient start={[1, 0.5]}
                           end={[0, 0]}
                           colors={['#e3179e', 'tomato', 'orange', 'yellow']}
@@ -174,19 +168,6 @@ export default ({navigation}) => {
                         </LinearGradient>
                         <Text style={{ textAlign: 'center', marginTop: 5 }}>{followings.username}</Text>
                       </Story>
-                      // :
-                      // <Story>
-                      //    <LinearGradient start={[1, 0.5]}
-                      //    end={[0, 0]}
-                      //     colors={['lightgray', 'lightgray']}
-                      //      style={localStyles.linearGradient}>
-                      //      <View style={localStyles.button}>
-                      //        <Thumbnail style={{ marginHorizontal: 'auto', borderColor: 'white', borderWidth: 2 }} source={{ uri: followings.avatar }} />
-                      //      </View>
-                      //    </LinearGradient>
-                      //    <Text style={{ color : 'gray', textAlign: 'center', marginTop: 5 }}>{followings.username}</Text>
-                      //  </Story> 
-                      // )
                     )
 
                   }
@@ -195,15 +176,12 @@ export default ({navigation}) => {
               </View>
             </View>
 
-
             { data &&
               data.seeFeed &&
-
-              data.seeFeed.map(post => <Post key={post.id} {...post} />)}
+             data.seeFeed.map(post => <Post key={post.id} {...post} me={data.me} />)}
           </>
           )
       }
-
     </ScrollView>
   );
 };

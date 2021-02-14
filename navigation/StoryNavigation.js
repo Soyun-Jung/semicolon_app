@@ -1,6 +1,4 @@
-import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
-import VideoStory from "../screens/story/VideoStory";
 import MakeStory from "../screens/story/MakeStory";
 import UploadStory from "../screens/story/UploadStory";
 import styles from "../styles";
@@ -23,7 +21,6 @@ export default createStackNavigator(
                 title:"업로드"
             }
         }
-        
     },
     {
         mode:"modal"

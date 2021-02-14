@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View,StyleSheet } from 'react-native';
+import { Text, View } from 'react-native';
 import Modal from 'react-native-modal';
 import styled from 'styled-components';
 import AuthInput from '../components/AuthInput';
@@ -7,9 +7,7 @@ import useInput from '../hooks/useInput';
 import { ActivityIndicator } from "react-native";
 import { useMutation } from 'react-apollo-hooks';
 import { gql } from "apollo-boost";
-import { FEED_QUERY } from './home/Home';
-import constants from "../Constants";
-
+import { FEED_QUERY } from './tabs/Home';
 const Button = styled.TouchableOpacity`
     background-color:whitesmoke;
     justifyContent: center
@@ -46,9 +44,9 @@ const DELETE_POST = gql`
 `;
 
 export default ({ id, copyCaption, setCopyCaption }) => {
-    //const toggleModal = () => { setModalVisible(!isModalVisible) };
+    const toggleModal = () => { setModalVisible(!isModalVisible) };
     const [isModalVisible, setModalVisible] = useState(false);
-    //const toggleInput = () => { setInputUp(!inputUp) }
+    const toggleInput = () => { setInputUp(!inputUp) }
     const [inputUp, setInputUp] = useState(false);
     const [loading, setLoading] = useState(false);
     const captionInput = useInput(copyCaption);
@@ -59,38 +57,28 @@ export default ({ id, copyCaption, setCopyCaption }) => {
             variables: { id, caption: captionInput.value },
             refetchQueries: [{ query: FEED_QUERY }]
         });
-    
-const editSubmit = async () => {
-    setCopyCaption(captionInput.value);
-    setLoading(true);
-    await editPostMutation();
-    setLoading(false);
-    setInputUp(!inputUp);
+
+    const editSubmit = async () => {
+        setCopyCaption(captionInput.value)
+        setLoading(true)
+        await editPostMutation();
+        setLoading(false)
+        toggleInput()
+        toggleModal()
     }
-
-const deletePost = async () => {
-    setLoading(true);
-    await deletePostMutation();
-    setLoading(false);
-    setModalVisible(!isModalVisible);
+    const deletePost = async () => {
+        setLoading(true)
+        await deletePostMutation();
+        setLoading(false)
+        toggleModal()
     }
-
-
-
     return (
         <View style={{ flex: 1 }}>
-            <Text onPress={() => {
-                setModalVisible(!isModalVisible);
-              }}
-             style={{ fontWeight: "bold", fontSize: 20, marginLeft: "auto" }}>...</Text>
-            <Modal animationType="slide" visible={isModalVisible}>
-                {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}> */}
-                <View style={styles.modalView} >
+            <Text onPress={toggleModal} style={{ fontWeight: "bold", fontSize: 20, marginLeft: "auto" }}>...</Text>
+            <Modal isVisible={isModalVisible}>
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <View style={{ marginBottom: 10, width: 100 }}>
-                        <Button onPress={() => {
-                setModalVisible(!isModalVisible);
-                setInputUp(!inputUp);
-              }}>
+                        <Button onPress={toggleInput}>
                             {loading ? <ActivityIndicator color={"black"} /> : <Text style={{ color: "black", fontWeight: "bold" }}>수정</Text>}
                         </Button>
                     </View>
@@ -100,17 +88,15 @@ const deletePost = async () => {
                         </Button>
                     </View>
                     <View style={{ marginBottom: 10, width: 100 }}>
-                        <Button onPress={() => {
-                setModalVisible(!isModalVisible);
-              }}>
+                        <Button onPress={toggleModal}>
                             {loading ? <ActivityIndicator color={"black"} /> : <Text style={{ color: "black", fontWeight: "bold" }}>취소</Text>}
                         </Button>
                     </View>
                 </View >
             </Modal >
 
-            <Modal animationType="slide" visible={inputUp}>
-                <View style={styles.modalView}>
+            <Modal isVisible={inputUp}>
+                <View style={{ alignItems: 'center' }}>
                     <View style={{ marginBottom: 10 }}>
                         <AuthInput placeholder={"Caption"} value={captionInput.value} onChange={captionInput.onChange} />
                     </View>
@@ -118,10 +104,7 @@ const deletePost = async () => {
                         <InputButton onPress={editSubmit}>
                             {loading ? <ActivityIndicator color={"black"} /> : <Text style={{ color: "black", fontWeight: "bold" }}>수정</Text>}
                         </InputButton>
-                        <InputButton onPress={() => {
-                            setInputUp(!inputUp);
-                            setModalVisible(!isModalVisible);
-                        }}>
+                        <InputButton onPress={toggleInput}>
                             {loading ? <ActivityIndicator color={"black"} /> : <Text style={{ color: "black", fontWeight: "bold" }}>취소</Text>}
                         </InputButton>
                     </View>
@@ -132,18 +115,3 @@ const deletePost = async () => {
     );
 
 }
-
-const styles = StyleSheet.create({
-    modalView: {
-    marginLeft: -constants.width/7,
-    width: constants.width*1.2,
-    height:constants.height,
-    //margin: 20,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    //borderRadius: 20,
-    //padding: 35,
-    alignItems: "center",
-    justifyContent: 'center'
-    //elevation: 5
-  }
-});

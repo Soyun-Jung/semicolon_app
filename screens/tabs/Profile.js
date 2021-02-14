@@ -18,7 +18,9 @@ export const ME = gql`
 
 export default ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const { loading, data, refetch } = useQuery(ME);
+    const { loading, data, refetch } = useQuery(ME, {
+    fetchPolicy: 'cache-and-network'
+  });
   const refresh = async () => {
     try {
       setRefreshing(true);
@@ -30,9 +32,7 @@ export default ({ navigation }) => {
     }
   };
   return (
-    <ScrollView refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={refresh} />
-      }>
+    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} />}>
       {loading ? <Loader /> : data && data.me && <UserProfile {...data.me} navigation={navigation}/>}
     </ScrollView>
   );

@@ -96,7 +96,7 @@ export default ({ navigation }) => {
       
   const _saveVideo = async () => {
     const asset = await MediaLibrary.createAssetAsync(uri);
-    console.log(asset)
+
     if (asset) {
       navigation.navigate("StoryUpload", { type: type, story: asset, uri });
       setUri(null)
@@ -113,7 +113,7 @@ export default ({ navigation }) => {
     // if (cameraRef) {
     setRecording(true)
     const { uri, codec = "mp4" } = await cameraRef.current.recordAsync();
-    console.log(uri)
+    console.log("uri",uri)
     setUri(uri)
     setType(codec)
     // setVideo(svideo)

@@ -64,6 +64,7 @@ export default ({ navigation }) => {
           autoCorrect={false}
         />
         <AuthButton loading={loading} onPress={handleLogin} text="로그인" />
+        <AuthButton loading={loading} onPress={() => { navigation.navigate("FindCheckemail") }} text="비밀번호 찾기" />
       </View>
     </TouchableWithoutFeedback>
   );

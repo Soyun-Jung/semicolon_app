@@ -11,8 +11,8 @@ import { FEED_QUERY } from "../home/Home";
 import { ME } from "../tabs/Profile";
 
 const UPLOADSTORY = gql`
-  mutation uploadStory($caption: String, $files: String, $tagUser: [String!]) {
-    uploadStory(caption: $caption, files: $files, tagUser: $tagUser) {
+  mutation uploadStory($caption: String, $files: String, $tagUser: [String!],$type : String) {
+    uploadStory(caption: $caption, files: $files, tagUser: $tagUser, type: $type) {
       id
       caption
     }
@@ -56,7 +56,6 @@ const Text = styled.Text`
 export default ({ navigation }) => {
   const [loading, setIsLoading] = useState(false);
   const uri = navigation.getParam("uri");
-
   const captionInput = useInput();
   const tagUserInput = useInput();
 
@@ -69,17 +68,19 @@ export default ({ navigation }) => {
   let imgUri; // 원안에 들어갈때 뜨는 사진
   let name; // 파일명
   let tagUsers; // 태그할 사람들 넣을 변수
-
+  let fileType;
   if (navigation.getParam("photo")) {
-     const photo = navigation.getParam("photo");
-    imgUri = photo.uri
+    const photo = navigation.getParam("photo");
+    fileType = photo.mediaType;
+    imgUri = photo.uri;
     name = photo.filename;
     const [, type] = name.split(".");
     uploadUri = photo.uri
     imageType = Platform.os === "ios" ? type.toLowerCase() : "image/jpeg";
   } else if (navigation.getParam("story")) {
-     const story = navigation.getParam("story");
-    imgUri = story.uri
+    const story = navigation.getParam("story");
+    fileType = story.mediaType;
+    imgUri = story.uri;
     name = story.filename;
     uploadUri = uri
     imageType = "mp4";
@@ -94,10 +95,9 @@ export default ({ navigation }) => {
 
     try {
       setIsLoading(true);
-      const { data: { location } } = await axios.post("https://semicolon-backend.herokuapp.com/api/upload", formData, {
+      const { data :{locationArray} } = await axios.post("https://semicolon-backend.herokuapp.com/api/upload", formData, {
         headers: { 'Content-Type': 'multipart/form-data', }
       });
-      console.log(location);
 
       //console.log(tagUserInput.value);
 
@@ -114,9 +114,10 @@ export default ({ navigation }) => {
 
       await uploadMutation({
         variables: {
-          files: location,
+          files: locationArray[0],
           caption: captionInput.value,
-          tagUser: tagUsers
+          tagUser: tagUsers,
+          type : fileType
         }
       });
 
