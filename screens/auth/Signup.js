@@ -15,8 +15,8 @@ const View = styled.View`
 `;
 
 export default ({ navigation }) => {
-  const fNameInput = useInput("");
-  const lNameInput = useInput("");
+  const fNameInput = useInput(navigation.getParam("firstName", ""));
+  const lNameInput = useInput(navigation.getParam("lastName", ""));
   const emailInput = useInput(navigation.getParam("email", ""));
   const usernameInput = useInput("");
   const PwInput = useInput("");
@@ -39,7 +39,7 @@ export default ({ navigation }) => {
     const { value: password } = PwInput;
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const pwdRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    
+
     if (!emailRegex.test(email)) {
       return Alert.alert("이메일을 제대로 입력해 주세요!");
     }

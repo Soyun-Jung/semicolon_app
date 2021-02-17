@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { FlatList } from "react-native";
 import {
   Container,
@@ -122,7 +121,7 @@ const UserNotification = ({ Notifications, navigation }) => {
   return (
     <Container>
             <FlatList
-              data={data.reverse()}
+                data={data.reverse()}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                     <Card onPress={() => navigation.navigate(item.state, item.roomInfo)}>
