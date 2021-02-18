@@ -69,11 +69,6 @@ const ButtonContainer = styled.View`
   margin-top: 30px;
 `;
 
-const PublicText = styled.Text`
-  color: black;
-  margin-top:25px;
-  text-align: center;
-`;
 
 const Button = styled.View`
   width: ${constants.width / 2};
@@ -99,29 +94,12 @@ const Button1 = styled.View`
   border-radius: 5px;
   justify-content: center;
 `;
-const Button2 = styled.View`
-  margin-top:10px;
-  width:85px;
-  align-items: center;
-  margin-left : ${constants.width / 1.8 / 20 };
-  background-color:white;
-  height:30px;
-  border-radius: 5px;
-  justify-content: center;
-`;
 
 const Text = styled.Text`
   color: white;
   text-align: center;
   font-weight: 600;
 `;
-
-const Text1 = styled.Text`
-  color: ${styles.navyColor};
-  text-align: center;
-  font-weight: 600;
-`;
-
 
 const ButtonView = styled.View`
   flexDirection: row;
@@ -144,6 +122,11 @@ const SettingBar = styled.TouchableOpacity`
 const EditText = styled.Text`
   color: white;
   
+  text-align: center;
+`;
+const PublicText = styled.Text`
+  color: black;
+  margin-top:25px;
   text-align: center;
 `;
 
@@ -289,13 +272,13 @@ const UserProfile = ({
               }
               await stateMutation();
               }}><Text>{change}</Text></TouchableOpacity></Button1> : null}
-            
-              {isSelf ? (<Button1><TouchableOpacity onPress={useLogOut()}><MaterialIcons name="logout" size={24} color="white" /></TouchableOpacity></Button1>)
+            <Button1>
+              {isSelf ? (<TouchableOpacity onPress={useLogOut()}><MaterialIcons name="logout" size={24} color="white" /></TouchableOpacity>)
                 :
                 (<TouchableOpacity onPress={Following}>
-                  {isFollowingS ? <Button2><Text1>Following</Text1></Button2> : <Button1><Text>Follow</Text></Button1>}
+                  {isFollowingS ? <Text>Following</Text> : <Text>Follow</Text>}
                   </TouchableOpacity>)}
-              
+              </Button1>
             </ButtonView>  
           </NameContainer>
         </ProfileStats>
@@ -325,10 +308,10 @@ const UserProfile = ({
         </TouchableOpacity>
       </ButtonContainer>
       {isSelf || userInfo.state === "1" || (userInfo.state === "2" && isFollowing) ?
-        (<>{isGrid ? <SquareBox>{posts && posts.map(p => {
+        (<>{isGrid ? <SquareBox>{posts && posts.reverse().map(p => {
           return (<SquarePhoto key={p.id} {...p} />)
         })}</SquareBox> : <>
-            {posts && posts.map(p => {
+            {posts && posts.reverse().map(p => {
               return (<Post key={p.id} {...p} me={me} />)
             })}</>}</>) : <PublicText>비공개 계정입니다.</PublicText>}
     </View>) : (

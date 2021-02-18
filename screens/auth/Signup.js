@@ -66,7 +66,7 @@ export default ({ navigation }) => {
       }
     } catch (e) {
       console.log(e);
-      Alert.alert("Woops! 닉네임이 중복돼요 🤣");
+      Alert.alert("Woops!","닉네임 또는 이메일이 중복돼요 🤣");
     } finally {
       setLoading(false);
     }

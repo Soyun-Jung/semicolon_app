@@ -22,7 +22,8 @@ export const RECOMMEND_QUERY = gql`
 
 const RecommendPresenter = () => {
     const [refreshing, setRefreshing] = useState(false);
-    const { data, loading, refetch } = useQuery(RECOMMEND_QUERY);
+  const { data, loading, refetch } = useQuery(RECOMMEND_QUERY, {fetchPolicy: 'cache-and-network'});
+
     const onRefresh = async () => {
         try {
             setRefreshing(true);
@@ -31,13 +32,17 @@ const RecommendPresenter = () => {
         } finally {
             setRefreshing(false);
         }
-    };
+  };
+
   return (
         <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap:"wrap" }} refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />} >
-            {loading ? (<Loader />
-            ) : (data &&
-                data.getRecommendation &&
-                  data.getRecommendation.map((post, index) => <RandomSquare key={post.id} {...post} index={index} />)
+      {loading ? (<Loader />
+      ) : (data &&
+        data.getRecommendation &&
+          data.getRecommendation.map((post, index) => {
+            if (post === null) return null;
+            return <RandomSquare key={post.id} {...post} index={index} />
+          })
                 )
             }
       </ScrollView >

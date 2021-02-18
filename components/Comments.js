@@ -12,7 +12,7 @@ import useInput from "../hooks/useInput";
 import CommentPresenter from "./CommentPresenter";
 import { FEED_QUERY } from "../screens/home/Home";
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import CommentDelete from './CommentDelete'
+import CommentDelete from './CommentDelete';
 
 
 const Container = styled.View`
@@ -111,7 +111,7 @@ const Comments = ({
         const {
           data: { addComment }
         } = await addCommentMutation();
-        setSelfComments([...selfComments, addComment]);
+        // setSelfComments([...selfComments, addComment]);
         commentInput.setValue("");
         Keyboard.dismiss();
       } catch {
@@ -143,7 +143,7 @@ const Comments = ({
       <ScrollView style={{flex: 1, padding:10}} >
           
           {comments.map(comment => (
-        <Swipeable renderRightActions={() => <CommentDelete id={comment.id} comments={comment} setSelfComments={setSelfComments}  />}>
+            <Swipeable renderRightActions={() => <CommentDelete id={comment.id} comments={comment} setSelfComments={setSelfComments} isSelf={ user.isSelf}  />}>
         <Touchable onPress={() => navigation.navigate("UserDetail", { username: comment.user.username })}>
           <Div>
                

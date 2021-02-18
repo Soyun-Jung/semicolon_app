@@ -2,9 +2,9 @@
   "expoServerPort": 19000,
   "packagerPort": 19000,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://5u-r6e.dankorea.semicolon-app.exp.direct",
+  "packagerNgrokUrl": "https://packager.5u-r6e.dankorea.semicolon-app.exp.direct",
+  "ngrokPid": 19496,
   "webpackServerPort": null,
   "devToolsPort": 19002
 }
