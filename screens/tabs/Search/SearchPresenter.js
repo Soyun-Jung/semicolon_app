@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, RefreshControl, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text,ScrollView, RefreshControl, View, StyleSheet, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
 import { gql } from "apollo-boost";
 import { useQuery } from "react-apollo-hooks";
@@ -37,7 +37,6 @@ const gradientMargin = () => {
 const gradientRatio = () => {
   return 0.94
 }
-
 const styles = () => StyleSheet.create({
   container: {
     position: 'relative',
@@ -107,7 +106,7 @@ const SearchPresenter = ({ term, shouldFetch, action, navigation }) => {
               }}
               horizontal={true} >
               {data && data.searchUser && data.searchUser.map(user =>
-
+              <View>
                 <LinearGradient start={[1, 0.5]}
                   end={[0, 0]}
                   colors={['#e3179e', 'tomato', 'orange', 'yellow']}
@@ -115,8 +114,9 @@ const SearchPresenter = ({ term, shouldFetch, action, navigation }) => {
                   <TouchableOpacity key={user.id} style={localStyles.button} onPress={() => { navigation.navigate("UserDetail", { username: user.username }) }}>
                     {<Thumbnail style={{ opacity: 0.7, marginHorizontal: 'auto', borderColor: 'white', borderWidth: 2 }} source={{ uri: user.avatar }} />}
                   </TouchableOpacity>
-                </LinearGradient>
-
+                </LinearGradient>               
+                  <Text style={{ textAlign: 'center', marginTop: 5}}>{user.username}</Text>
+              </View>                 
               )}
             </ScrollView>
           </View>

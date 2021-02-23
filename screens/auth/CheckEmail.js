@@ -69,7 +69,7 @@ export default ({ navigation }) => {
         try {
             setLoading(true);
             await Facebook.initializeAsync({
-                appId: '2733777443554055',
+                appId: '119711363348825',
             });
             const {
                 type,
